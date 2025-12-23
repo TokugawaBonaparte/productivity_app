@@ -1,36 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
-bool break_value = false;
-bool break_add = false;
 int i = 1; // no. for the list of subjects
-int j = 1;
-map<string, pair< string, char> > sub_chap; //cotains subjects and chapters to revise
+int second = 1;
+// use [] to access data in maps.
+map<string, vector<pair< string, char>> > sub_chap; //cotains subjects and chapters to revise
 void View(){
+    int rev_exi_ch;
     string rev_ch, rev_sub;
-    cout << "Items to Revise :" << "          " << "Status" << endl;//10 spaces
-    for(auto sub : sub_chap){
-        cout << i << ") " << sub.first << endl << "    ";
-        for(auto chap : sub_chap){
-            cout << j << ") " << chap.second.first << "      " << chap.second.second << endl;
-            j ++;
+    while (true){
+        i = second = 1;
+        cout << "Items to Revise :" << setw(20) << "Status" << endl << endl;//10 spaces
+        for(auto sub : sub_chap){
+            cout << i << ") " << sub.first << endl << "    ";
+            for(int j = 0 ; j < sub_chap[sub.first].size() ; j++){
+                cout << second << ") " << sub_chap[sub.first][j].first << "      " << sub_chap[sub.first][j].second << endl;
+                second ++;
+            }
+            i++;
         }
-        i++;
-    }
-    cout << "Which Subject will you revise : " ;
-    cin >> rev_sub;
-    cout << endl;
-    cout << "Which Chapter will you revise : " ;
-    cin >> rev_ch;
-    cout << endl;
-    cout << "**********************************************" << endl ;
-    sub_chap[rev_sub] = {rev_ch,'Y'};
-    for(auto sub : sub_chap){
-        cout << i << ") " << sub.first << endl << "    ";
-        for(auto chap : sub_chap){
-            cout << j << ") " << chap.second.first << "      " << chap.second.second << endl;
-            j ++;
+        /*sub_chap - variable name
+        sub -> key value pair
+        sub.first -> key 
+        j -> position in vector
+        .first -> 1st elemt (string / chapter ) of that pair at that position
+        */
+        cout << "Options :" << endl << "    ";
+        cout << "1) Revise" << endl << "    " << "2) Exit" << "\n";
+        cout << "Choose : ";
+        cin >> rev_exi_ch;
+        if(rev_exi_ch == 1) {
+            cout << "Which Subject will you revise : " ;
+            cin >> rev_sub;
+            cout << endl;
+            cout << "Which Chapter will you revise : " ;
+            cin >> rev_ch;
+            cout << endl;
+            cout << "**********************************************" << endl ;
+            int position = 0 ;//placeholder. needs to be changed
+            sub_chap[rev_sub][position].second = 'Y';
         }
-        i++;
+        else break;
     }
 }
 void Add(){
@@ -40,37 +49,38 @@ void Add(){
     string chap_name; // TO CHANGE
     char exi_ch; 
     while (true){
+        i = 1;
         cout << "Added Subjects : " << endl;
         for(auto sub : sub_chap){
-        cout << i << ") " << sub.first << endl << "    ";
-            for(auto chap : sub_chap){
-                cout << j << ") " << chap.second.first << endl;
-                j ++;
+            second = 1;
+            cout << i << ") " << sub.first << endl << "    ";
+            for(int j = 0 ; j < sub_chap[sub.first].size() ; j++){
+                cout << second << ") " << sub_chap[sub.first][j].first << endl;
+                second ++;
             }
             i++;
-        }
+        } 
+        cout << endl;
         cout << "Is it a New Subject (Y / N) : " ; 
         cin >> new_sub;
         if(new_sub == 'Y' or new_sub == 'y') {
             cout << "Enter Subject : ";
             cin >> sub_name;
-            sub_chap[sub_name] = {"",'N'};
-            cout << "Enter Chapter :  ";
+            cout << "Enter Chapter : ";
             cin >> chap_name;
-            sub_chap[sub_name] = {chap_name,'N'};
+            sub_chap[sub_name].push_back({chap_name,'N'});
         }
         else {
             cout << "Which Subject : "; 
             cin >> sub_name;     //TO CHANGE
             cout << "Enter Chapter :  ";
             cin >> chap_name;
-            sub_chap[sub_name] = {chap_name,'N'};
+            sub_chap[sub_name].push_back({chap_name,'N'});
         }  
         cout << "Exit ? (Y / N) : " ;
         cin >> exi_ch;
         cout << endl;
-        if(exi_ch == 'Y'){
-            break_add = true;
+        if((exi_ch == 'Y')||(exi_ch == 'y')){
             break;
         }
     }
@@ -78,7 +88,7 @@ void Add(){
 int main(){
     while (true){
         //welcome screen
-        int wel_ch;
+        int wel_ch = 0;
         cout << "               " <<"Spaced Repitition Helper" << endl;
         cout << "Options " << endl;
         cout << "     " << "1) View Subjects"<< endl;
@@ -88,10 +98,7 @@ int main(){
         cin >> wel_ch;
         if(wel_ch == 1) View();
         else if(wel_ch == 2) Add();
-        else break;
-        // 2 and 3 break
-        if((break_value == true ) || (break_add = true )){
-            break;
-        }
+        else if(wel_ch == 3) break;
+        else cout << "Invalid Choice . Try Again" << "\n";
     }
 }
